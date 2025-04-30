@@ -1,0 +1,247 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Free intellectual property services including patentability, prior art search, FTO, patent landscape, EOU charts, invalidity, and infringement analysis by Your IP Solutions™.">
+  <meta name="keywords" content="patent analysis, intellectual property services, prior art search, FTO, patent landscape, invalidity search, EOU charts, infringement analysis">
+  <title>Your IP Solutions™ - Free Patent Analysis Services</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <!-- Navigation -->
+  <nav class="bg-white shadow-md fixed w-full z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center">
+          <h1 class="text-2xl font-bold text-gray-800">Your IP Solutions™</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+          <a href="#home" class="text-gray-600 hover:text-blue-600">Home</a>
+          <a href="#services" class="text-gray-600 hover:text-blue-600">Services</a>
+          <a href="#case-studies" class="text-gray-600 hover:text-blue-600">Case Studies</a>
+          <a href="#testimonials" class="text-gray-600 hover:text-blue-600">Testimonials</a>
+          <a href="#about" class="text-gray-600 hover:text-blue-600">About</a>
+          <a href="#contact" class="text-gray-600 hover:text-blue-600">Contact</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="home" class="min-h-screen flex items-center bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center fade-in">
+      <h1 class="text-4xl md:text-6xl font-bold mb-4">Expert Intellectual Property Solutions</h1>
+      <p class="text-lg md:text-xl mb-6">Free consultations for patent analysis to protect your innovations.</p>
+      <a href="#contact" class="inline-block bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-200">Get a Free Consultation</a>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section id="services" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Our Intellectual Property Services</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="p-6 bg-gray-50 rounded-lg shadow-md fade-in">
+          <h3 class="text-xl font-semibold mb-4">Patentability Search</h3>
+          <p class="text-gray-600">Assess the novelty of your invention with thorough prior art analysis.</p>
+        </div>
+        <div class="p-6 bg-gray-50 rounded-lg shadow-md fade-in">
+          <h3 class="text-xl font-semibold mb-4">Prior Art Search</h3>
+          <p class="text-gray-600">Identify relevant patents and publications to strengthen your strategy.</p>
+        </div>
+        <div class="p-6 bg-gray-50 rounded-lg shadow-md fade-in">
+          <h3 class="text-xl font-semibold mb-4">Patent Landscape</h3>
+          <p class="text-gray-600">Gain insights into technology trends and competitive positioning.</p>
+        </div>
+        <div class="p-6 bg-gray-50 rounded-lg shadow-md fade-in">
+          <h3 class="text-xl font-semibold mb-4">Freedom to Operate (FTO)</h3>
+          <p class="text-gray-600">Ensure your product launch avoids patent infringement risks.</p>
+        </div>
+        <div class="p-6 bg-gray-50 rounded-lg shadow-md fade-in">
+          <h3 class="text-xl font-semibold mb-4">EOU Charts & Invalidity</h3>
+          <p class="text-gray-600">Detailed claim mapping and prior art to challenge patent validity.</p>
+        </div>
+        <div class="p-6 bg-gray-50 rounded-lg shadow-md fade-in">
+          <h3 class="text-xl font-semibold mb-4">Infringement Analysis</h3>
+          <p class="text-gray-600">Evaluate potential patent violations with precise claim analysis.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Case Studies Section -->
+  <section id="case-studies" class="py-20 bg-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Case Studies</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-white rounded-lg shadow-md overflow-hidden fade-in">
+          <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300&q=80" alt="FTO analysis for tech startup" class="w-full h-48 object-cover">
+          <div class="p-6">
+            <h3 class="text-xl font-semibold mb-2">Tech Startup FTO</h3>
+            <p class="text-gray-600">Conducted an FTO analysis for a new AI product, clearing the path for market entry.</p>
+          </div>
+        </div>
+        <div class="bg-white rounded-lg shadow-md overflow-hidden fade-in">
+          <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300&q=80" alt="Invalidity search for patent litigation" class="w-full h-48 object-cover">
+          <div class="p-6">
+            <h3 class="text-xl font-semibold mb-2">Invalidity Search</h3>
+            <p class="text-gray-600">Identified prior art that invalidated a competitor’s patent, saving litigation costs.</p>
+          </div>
+        </div>
+        <div class="bg-white rounded-lg shadow-md overflow-hidden fade-in">
+          <img src="https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300&q=80" alt="Patent landscape for medical devices" class="w-full h-48 object-cover">
+          <div class="p-6">
+            <h3 class="text-xl font-semibold mb-2">Patent Landscape</h3>
+            <p class="text-gray-600">Mapped 500+ patents to guide R&D for a medical device company.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section id="testimonials" class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Client Success Stories</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="p-6 bg-white rounded-lg shadow-md fade-in">
+          <p class="text-gray-600 italic">"Their FTO analysis saved us months of R&D and ensured a smooth product launch."</p>
+          <p class="text-gray-800 font-semibold mt-4">Tech Startup CEO</p>
+        </div>
+        <div class="p-6 bg-white rounded-lg shadow-md fade-in">
+          <p class="text-gray-600 italic">"The invalidity search was thorough and helped us challenge a competitor’s patent."</p>
+          <p class="text-gray-800 font-semibold mt-4">IP Manager</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">About Your IP Solutions™</h2>
+      <div class="flex flex-col md:flex-row items-center">
+        <div class="md:w-1/2 mb-8 md:mb-0 fade-in">
+          <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&h=400&q=80" alt="Patent analysis team at work" class="rounded-lg shadow-md">
+        </div>
+        <div class="md:w-1/2 md:pl-8 fade-in">
+          <p class="text-gray-600 mb-4">Your IP Solutions™ provides expert intellectual property services, specializing in patent analysis for innovators worldwide. Our experienced patent analysts deliver actionable insights to protect your inventions.</p>
+          <p class="text-gray-600">With a client-centric approach and deep technical expertise, we help businesses navigate the IP landscape confidently.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-20 bg-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Contact Your IP Solutions™</h2>
+      <div class="max-w-lg mx-auto fade-in">
+        <form action="https://formspree.io/f/your-form-id" method="POST" class="bg-white p-6 rounded-lg shadow-md">
+          <div class="mb-4">
+            <label for="name" class="block text-gray-600 mb-2">Name</label>
+            <input type="text" id="name" name="name" class="w-full p-3 border rounded-lg" placeholder="Your Name" required>
+          </div>
+          <div class="mb-4">
+            <label for="email" class="block text-gray-600 mb-2">Email</label>
+            <input type="email" id="email" name="email" class="w-full p-3 border rounded-lg" placeholder="Your Email" required>
+          </div>
+          <div class="mb-4">
+            <label for="message" class="block text-gray-600 mb-2">Message</label>
+            <textarea id="message" name="message" class="w-full p-3 border rounded-lg" rows="5" placeholder="Tell us about your IP needs" required></textarea>
+          </div>
+          <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-700">Submit Inquiry</button>
+        </form>
+        <div class="text-center mt-6">
+          <p class="text-gray-600">Want to schedule a call? Email us to arrange a free consultation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <p>© 2025 Your IP Solutions™. All rights reserved. Your IP Solutions™ is a trademark of [Your Name/Business].</p>
+    </div>
+  </footer>
+
+  <script>
+    // Smooth scrolling for navigation
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+
+    // Fade-in animation on scroll
+    const fadeElements = document.querySelectorAll('.fade-in');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    fadeElements.forEach(element => observer.observe(element));
+  </script>
+</body>
+</html>
